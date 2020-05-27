@@ -474,6 +474,10 @@ namespace FirebaseAdmin.IntegrationTests
                 var query = HttpUtility.ParseQueryString(uri.Query);
                 Assert.Equal(ContinueUrl, query["continueUrl"]);
 
+                // "Missing {0} field. A common cause would be "
+                //            + "forgetting to add the 'Firebase Authentication Admin' permission. "
+                //            + "See instructions in CONTRIBUTING.md";
+
                 var idToken = await SignInWithEmailLinkAsync(user.Email, query["oobCode"]);
                 Assert.NotEmpty(idToken);
 
