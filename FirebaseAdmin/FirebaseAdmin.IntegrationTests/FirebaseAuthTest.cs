@@ -485,6 +485,13 @@ namespace FirebaseAdmin.IntegrationTests
                 user = await FirebaseAuth.DefaultInstance.GetUserAsync(user.Uid);
                 Assert.True(user.EmailVerified);
             }
+            catch(FirebaseAdmin.Auth.FirebaseAuthException err) 
+            {
+                if (err.ErrorCode.Equals(400) && err.Message.Equals("OPERATION_NOT_ALLOWED"))
+                {
+                    
+                }
+            }
             finally
             {
                 await FirebaseAuth.DefaultInstance.DeleteUserAsync(user.Uid);

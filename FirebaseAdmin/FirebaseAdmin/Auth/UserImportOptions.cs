@@ -35,10 +35,12 @@ namespace FirebaseAdmin.Auth
     /// <returns>Dictionary containing key/values for password hashing properties.</returns>
     public IReadOnlyDictionary<string, object> GetHashProperties()
     {
-      if (Hash == null) {
+      if (this.Hash == null)
+      {
         throw new ArgumentException("UserImportHash Hash was not defined");
       }
-      return Hash.GetProperties();
+
+      return this.Hash.GetProperties();
     }
   }
 }

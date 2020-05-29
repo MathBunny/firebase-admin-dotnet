@@ -22,18 +22,24 @@ namespace FirebaseAdmin.Auth
   /// </summary>
   public class UserImportResult
   {
-    private readonly int Users;
-    IReadOnlyList<ErrorInfo> Errors { set; get; }
+    private readonly int users;
 
     /// <summary>
-    /// Initializes an UserImportResults object based on supplied users and 
+    /// Initializes a new instance of the <see cref="UserImportResult"/> class based on supplied users and
     /// <a cref="UploadAccountResponse">UploadAccountResponse</a> objects.
     /// </summary>
+    /// <param name="users"> The number of users.</param>
+    /// <param name="response"> The UploadAccountResponse generated from the post request.</param>
     public UserImportResult(int users, UploadAccountResponse response)
     {
       this.Errors = new List<ErrorInfo>(response.Errors);
-      this.Users = users;
+      this.users = users;
     }
+
+    /// <summary>
+    /// Gets or sets errors associated with a user import.
+    /// </summary>
+    public IReadOnlyList<ErrorInfo> Errors { get; set; }
 
     /// <summary>
     /// Returns the number of users that were imported successfully.
@@ -41,7 +47,7 @@ namespace FirebaseAdmin.Auth
     /// <returns>Number of users successfully imported (possibly zero).</returns>
     public int SuccessCount()
     {
-      return Users - Errors.Count;
+      return this.users - this.Errors.Count;
     }
 
     /// <summary>
@@ -50,7 +56,7 @@ namespace FirebaseAdmin.Auth
     /// <returns>Number of users that resulted in import failures (possibly zero).</returns>
     public int FailureCount()
     {
-      return Errors.Count;
+      return this.Errors.Count;
     }
   }
 }

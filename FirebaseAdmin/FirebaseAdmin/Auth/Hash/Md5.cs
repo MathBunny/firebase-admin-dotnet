@@ -12,19 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-
 namespace FirebaseAdmin.Auth.Hash
 {
   /// <summary>
   /// Represents the MD5 password hashing algorithm. Can be used as an instance of
   /// <a cref="UserImportHash">UserImportHash</a> when importing users.
   /// </summary>
-  class Md5 : RepeatableHash
+  public sealed class Md5 : RepeatableHash
   {
+    /// <summary>
+    /// Gets the hash name which is MD5.
+    /// </summary>
     protected override string HashName { get { return "MD5"; } }
+
+    /// <summary>
+    /// Gets the minimum number of rounds for an MD5 hash which is 0.
+    /// </summary>
     protected override int MinRounds { get { return 0; } }
+
+    /// <summary>
+    /// Gets the maximum number of rounds for an MD5 hash which is 8192.
+    /// </summary>
     protected override int MaxRounds { get { return 8192; } }
   }
 }

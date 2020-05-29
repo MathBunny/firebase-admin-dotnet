@@ -23,7 +23,7 @@ namespace FirebaseAdmin.Auth
   public class UploadAccountResponse
   {
     /// <summary>
-    /// List of errors populated after a user import request by the identity toolkit.
+    /// Gets the list of errors populated after a user import request by the identity toolkit.
     /// </summary>
     [JsonProperty("error")]
     public IEnumerable<ErrorInfo> Errors { get; }

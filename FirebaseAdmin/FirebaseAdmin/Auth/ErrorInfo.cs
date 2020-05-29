@@ -22,27 +22,29 @@ namespace FirebaseAdmin.Auth
   public class ErrorInfo
   {
     /// <summary>
-    /// Gets the index of the failed user in the list passed to the
-    /// <see cref="o:FirebaseAuth.ImportUsersAsync"/> method.
+    /// Initializes a new instance of the <see cref="ErrorInfo"/> class, based on a provided index and reason.
     /// </summary>
-    /// <returns>An integer index.</returns>
-    [JsonProperty("index")]
-    int Index { get; }
-
-    /// <summary>
-    /// String describing the error.
-    /// </summary>
-    /// <returns>A string error message.</returns>
-    [JsonProperty("message")]
-    string Reason { get; }
-
-    /// <summary>
-    /// Initializes ErrorInfo object. TODO
-    /// </summary>
+    /// <param name="index">The index within the list of errors.</param>
+    /// <param name="reason">The reason for the error.</param>
     public ErrorInfo(int index, string reason)
     {
       this.Index = index;
       this.Reason = reason;
     }
+
+    /// <summary>
+    /// Gets the index of the failed user in the list passed to the
+    /// <see cref="o:FirebaseAuth.ImportUsersAsync"/> method.
+    /// </summary>
+    /// <returns>An integer index.</returns>
+    [JsonProperty("index")]
+    public int Index { get; }
+
+    /// <summary>
+    /// Gets string describing the error.
+    /// </summary>
+    /// <returns>A string error message.</returns>
+    [JsonProperty("message")]
+    public string Reason { get; }
   }
 }

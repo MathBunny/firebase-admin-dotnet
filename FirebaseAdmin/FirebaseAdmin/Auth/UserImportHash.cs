@@ -20,7 +20,7 @@ namespace FirebaseAdmin.Auth
   /// <summary>
   /// Represents a hash algorithm and the related configuration parameters used to hash user
   /// passwords. An instance of this class must be specified if importing any users with password
-  /// hashes (see <a cref="UserImportOptions">(UserImportOptions)</a>).
+  /// hashes (see <a cref="UserImportOptions">UserImportOptions</a>).
   /// </summary>
   /// <remark>This is not expected to be extended in user code. Applications should use one of the provided
   ///  concrete implementations in the <a cref="FirebaseAdmin.Auth.Hash">namespace</a>. See
@@ -30,7 +30,7 @@ namespace FirebaseAdmin.Auth
   public abstract class UserImportHash
   {
     /// <summary>
-    /// Specifies the name of the import hash.
+    /// Gets the name of the import hash.
     /// </summary>
     protected abstract string HashName { get; }
 
@@ -40,21 +40,21 @@ namespace FirebaseAdmin.Auth
     /// <returns>Dictionary containing the specified properties of the hashing algorithm.</returns>
     public IReadOnlyDictionary<string, object> GetProperties()
     {
-      if (string.IsNullOrEmpty(HashName))
+      if (string.IsNullOrEmpty(this.HashName))
       {
         throw new ArgumentException("User import hash name must not be null or empty.");
       }
 
-      var options = GetOptions();
-      var properties = new Dictionary<string, object>((Dictionary<string, object>) options);
-      properties.Add("hashAlgorithm", HashName);
+      var options = this.GetOptions();
+      var properties = new Dictionary<string, object>((Dictionary<string, object>)options);
+      properties.Add("hashAlgorithm", this.HashName);
       return properties;
     }
 
     /// <summary>
-    /// TODO: 
+    /// Retrives dictionary with the specified properties of the hashing algorithm.
     /// </summary>
     /// <returns>Dictionary containing the specified properties of the hashing algorithm.</returns>
-    protected abstract IReadOnlyDictionary<string, Object> GetOptions();
+    protected abstract IReadOnlyDictionary<string, object> GetOptions();
   }
 }

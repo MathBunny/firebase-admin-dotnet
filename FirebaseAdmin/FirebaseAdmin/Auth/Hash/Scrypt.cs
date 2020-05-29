@@ -20,86 +20,112 @@ namespace FirebaseAdmin.Auth.Hash
   /// <summary>
   /// Represents the Scrypt password hashing algorithm. This is the
   /// <a href="https://github.com/firebase/scrypt">modified Scrypt algorithm</a> used by
-  /// Firebase Auth. See <a cref="StandardScrypt">StandardScrypt</a> for the standard Scrypt algorithm. 
+  /// Firebase Auth. See <a cref="StandardScrypt">StandardScrypt</a> for the standard Scrypt algorithm.
   /// Can be used as an instance of <a cref="UserImportHash">UserImportHash</a> when importing users.
   /// </summary>
-  class Scrypt : RepeatableHash
+  public sealed class Scrypt : RepeatableHash
   {
+    private string key;
+
+    private string saltSeparator;
+
+    private int? memoryCost;
+
+    /// <summary>
+    /// Gets the hash name which is SCRYPT.
+    /// </summary>
     protected override string HashName { get { return "SCRYPT"; } }
 
-    protected override int MinRounds { get { return 0; } }
+    /// <summary>
+    /// Gets the minimum number of rounds for a Scrypt hash which is 0.
+    /// </summary>
+    protected override int MinRounds { get { return 1; } }
+
+    /// <summary>
+    /// Gets the maximum number of rounds for a Scrypt hash which is 8.
+    /// </summary>
     protected override int MaxRounds { get { return 8; } }
 
-    private string key;
     private string Key
     {
+      get
+      {
+        if (this.key == null)
+        {
+          throw new ArgumentException("key must be initialized");
+        }
+
+        return this.key;
+      }
+
       set
       {
         if (string.IsNullOrEmpty(value))
         {
           throw new ArgumentException("key must not be null or empty");
         }
+
         var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(value);
-        key = UrlSafeBase64Encode(plainTextBytes);
-      }
-      get
-      {
-        if (key == null)
-        {
-          throw new ArgumentException("key must be initialized");
-        }
-        return key;
+        this.key = UrlSafeBase64Encode(plainTextBytes);
       }
     }
 
-    private string saltSeparator;
     private string SaltSeparator
     {
+      get
+      {
+        return this.saltSeparator;
+      }
+
       set
       {
         if (value != null)
         {
           var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(value);
-          saltSeparator = UrlSafeBase64Encode(plainTextBytes);
+          this.saltSeparator = UrlSafeBase64Encode(plainTextBytes);
         }
         else
         {
-          saltSeparator = System.Convert.ToBase64String(new byte[0]);
+          this.saltSeparator = System.Convert.ToBase64String(new byte[0]);
         }
-      }
-      get
-      {
-        return saltSeparator;
       }
     }
 
-    private int memoryCost = Int32.MinValue;
     private int MemoryCost
     {
+      get
+      {
+        if (this.memoryCost == null)
+        {
+          throw new ArgumentException("memory cost must be set");
+        }
+
+        return (int)this.memoryCost;
+      }
+
       set
       {
         if (value < 1 || value > 14)
         {
           throw new ArgumentException("memory cost must be between 1 and 14 (inclusive)");
         }
-        memoryCost = value;
-      }
-      get
-      {
-        if (memoryCost == Int32.MinValue)
-        {
-          throw new ArgumentException("memory cost must be set");
-        }
-        return memoryCost;
+
+        this.memoryCost = (int?)value;
       }
     }
 
+    /// <summary>
+    /// Returns the options for the hashing algorithm.
+    /// </summary>
+    /// <returns>
+    /// Dictionary defining options such as signer key, .
+    /// </returns>
     protected override IReadOnlyDictionary<string, object> GetOptions()
     {
-      var dict = new Dictionary<string, object>((Dictionary<string, object>)(base.GetOptions()));
-      dict.Add("signerKey", Key);
-      dict.Add("memoryCost", MemoryCost);
-      dict.Add("SaltSeparator", SaltSeparator);
+      var dict = new Dictionary<string, object>((Dictionary<string, object>)base.GetOptions());
+      dict.Add("signerKey", this.Key);
+      dict.Add("memoryCost", this.MemoryCost);
+      dict.Add("SaltSeparator", this.SaltSeparator);
       return dict;
     }
 

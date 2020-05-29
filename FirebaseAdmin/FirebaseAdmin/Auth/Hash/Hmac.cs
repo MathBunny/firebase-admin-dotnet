@@ -17,19 +17,32 @@ using System.Collections.Generic;
 
 namespace FirebaseAdmin.Auth.Hash
 {
-  abstract class Hmac : UserImportHash
+  /// <summary>
+  /// Base class for Hmac type hashes.
+  /// </summary>
+  public abstract class Hmac : UserImportHash
   {
-    protected string Key { set; get; }
+    /// <summary>
+    /// Gets or sets the key for the hash.
+    /// </summary>
+    protected string Key { get; set; }
 
+    /// <summary>
+    /// Verifies that the key was appropriately set and returns the options dictionary.
+    /// </summary>
+    /// <returns>
+    /// Returns the dictionary containing an entry for the signing key.
+    /// </returns>
     protected override IReadOnlyDictionary<string, object> GetOptions()
     {
-      if (string.IsNullOrEmpty(Key))
+      if (string.IsNullOrEmpty(this.Key))
       {
         throw new ArgumentException("key must not be null or empty");
       }
 
-      return new Dictionary<string, object>{
-         {"signerKey", Key}
+      return new Dictionary<string, object>
+      {
+         { "signerKey", this.Key },
       };
     }
   }

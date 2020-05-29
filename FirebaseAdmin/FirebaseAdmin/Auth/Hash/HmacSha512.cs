@@ -18,8 +18,11 @@ namespace FirebaseAdmin.Auth.Hash
   /// Represents the HMAC SHA512 password hashing algorithm. Can be used as an instance of
   /// <a cref="UserImportHash">UserImportHash</a> when importing users.
   /// </summary>
-  class HmacSha512 : Hmac
+  public sealed class HmacSha512 : Hmac
   {
+    /// <summary>
+    /// Gets and defines name to be equal to HMAC_SHA512.
+    /// </summary>
     protected override string HashName { get { return "HMAC_SHA512"; } }
   }
 }

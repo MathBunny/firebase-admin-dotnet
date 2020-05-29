@@ -21,23 +21,41 @@ namespace FirebaseAdmin.Auth.Hash
   /// An abstract <a cref="UserImportHash">UserImportHash</a> implementation for specifying a <c>Rounds</c> count in
   /// a given range.
   /// </summary>
-  abstract class RepeatableHash : UserImportHash
+  public abstract class RepeatableHash : UserImportHash
   {
-    protected int Rounds { set; get; }
+    /// <summary>
+    /// Gets or sets the number of rounds for the repeatable hash.
+    /// </summary>
+    protected int Rounds { get; set; }
+
+    /// <summary>
+    /// Gets the minimum number of rounds for that respective repeatable hash implementation.
+    /// </summary>
     protected abstract int MinRounds { get; }
+
+    /// <summary>
+    /// Gets the maximum number of rounds for that respective repeatable hash implementation.
+    /// </summary>
     protected abstract int MaxRounds { get; }
 
-    override protected IReadOnlyDictionary<string, Object> GetOptions()
+    /// <summary>
+    /// Verifies that the specified Rounds are within the required bounds and returns an appropriate dictionary.
+    /// </summary>
+    /// <returns> Dictionary containing the number of rounds.</returns>
+    protected override IReadOnlyDictionary<string, object> GetOptions()
     {
-      if (Rounds >= MinRounds && Rounds <= MaxRounds)
+      if (this.Rounds >= this.MinRounds && this.Rounds <= this.MaxRounds)
       {
-        throw new ArgumentException($"Rounds value must be between {MinRounds} and ${MaxRounds} (inclusive).");
+        throw new ArgumentException($"Rounds value must be between {this.MinRounds} and ${this.MaxRounds} (inclusive).");
       }
 
-      return new Dictionary<string, object>{
-         {"rounds", Rounds}
+      return new Dictionary<string, object>
+      {
+        {
+          "rounds",
+          this.Rounds
+        },
       };
     }
   }
-
 }

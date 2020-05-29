@@ -21,101 +21,126 @@ namespace FirebaseAdmin.Auth.Hash
   /// Represents the Standard Scrypt password hashing algorithm. Can be used as an instance of
   /// <a cref="UserImportHash">UserImportHash</a> when importing users.
   /// </summary>
-  class StandardScrypt : UserImportHash
+  public sealed class StandardScrypt : UserImportHash
   {
+    private int? derivedKeyLength;
+
+    private int? blockSize;
+
+    private int? memoryCost;
+
+    private int? parallelization;
+
+    /// <summary>
+    /// Gets the hash name which is STANDARD_SCRYPT.
+    /// </summary>
     protected override string HashName { get { return "STANDARD_SCRYPT"; } }
 
-    private int? derivedKeyLength;
     private int DerivedKeyLength
     {
+      get
+      {
+        if (this.derivedKeyLength == null)
+        {
+          throw new ArgumentException("DerivedKeyLength must be initialized");
+        }
+
+        return (int)this.derivedKeyLength;
+      }
+
       set
       {
         if (value < 0)
         {
           throw new ArgumentException("DerivedKeyLength must be non-negative");
         }
-        derivedKeyLength = value;
-      }
-      get
-      {
-        if (derivedKeyLength == null)
-        {
-          throw new ArgumentException("DerivedKeyLength must be initialized");
-        }
-        return (int)derivedKeyLength;
+
+        this.derivedKeyLength = value;
       }
     }
 
-    private int? blockSize;
     private int BlockSize
     {
+      get
+      {
+        if (this.blockSize == null)
+        {
+          throw new ArgumentException("BlockSize must be initialized");
+        }
+
+        return (int)this.blockSize;
+      }
+
       set
       {
         if (value < 0)
         {
           throw new ArgumentException("BlockSize must be non-negative");
         }
-        blockSize = value;
-      }
-      get
-      {
-        if (blockSize == null)
-        {
-          throw new ArgumentException("BlockSize must be initialized");
-        }
-        return (int)blockSize;
+
+        this.blockSize = value;
       }
     }
 
-    private int? parallelization;
     private int Parallelization
     {
+      get
+      {
+        if (this.parallelization == null)
+        {
+          throw new ArgumentException("Parallelization must be initialized");
+        }
+
+        return (int)this.parallelization;
+      }
+
       set
       {
         if (value < 0)
         {
           throw new ArgumentException("Parallelization must be non-negative");
         }
-        parallelization = value;
-      }
-      get
-      {
-        if (parallelization == null)
-        {
-          throw new ArgumentException("Parallelization must be initialized");
-        }
-        return (int)parallelization;
+
+        this.parallelization = value;
       }
     }
 
-    private int? memoryCost;
     private int MemoryCost
     {
+      get
+      {
+        if (this.memoryCost == null)
+        {
+          throw new ArgumentException("Memory cost must be initialized");
+        }
+
+        return (int)this.memoryCost;
+      }
+
       set
       {
         if (value < 0)
         {
           throw new ArgumentException("Memory cost must be non-negative");
         }
-        memoryCost = value;
-      }
-      get
-      {
-        if (memoryCost == null)
-        {
-          throw new ArgumentException("Memory cost must be initialized");
-        }
-        return (int)memoryCost;
+
+        this.memoryCost = value;
       }
     }
 
+    /// <summary>
+    /// Returns the options for the hashing algorithm.
+    /// </summary>
+    /// <returns>
+    /// Dictionary defining options such as derived key length, block size, parallization and memory cost.
+    /// </returns>
     protected override IReadOnlyDictionary<string, object> GetOptions()
     {
       var dict = new Dictionary<string, object>();
-      dict.Add("dkLen", DerivedKeyLength);
-      dict.Add("blockSize", BlockSize);
-      dict.Add("parallization", Parallelization);
-      dict.Add("memoryCost", MemoryCost);
+      dict.Add("dkLen", this.DerivedKeyLength);
+      dict.Add("blockSize", this.BlockSize);
+      dict.Add("parallization", this.Parallelization);
+      dict.Add("memoryCost", this.MemoryCost);
       return dict;
     }
   }

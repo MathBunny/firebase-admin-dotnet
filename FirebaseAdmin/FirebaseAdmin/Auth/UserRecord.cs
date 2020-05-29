@@ -13,8 +13,8 @@
 // limitations under the License.
 
 using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Google.Apis.Json;
 
 namespace FirebaseAdmin.Auth
@@ -25,6 +25,11 @@ namespace FirebaseAdmin.Auth
   /// </summary>
   public class UserRecord : IUserInfo
   {
+    /// <summary>
+    /// Key name for custom attributes.
+    /// </summary>
+    public const string CustomAttributes = "customAttributes";
+
     internal static readonly DateTime UnixEpoch = new DateTime(
         1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -33,12 +38,6 @@ namespace FirebaseAdmin.Auth
     private const int MaxUidLength = 128;
 
     private readonly long validSinceTimestampInSeconds;
-
-    /// <summary>
-    /// Key name for custom attributes.
-    /// </summary>
-    public const String CustomAttributes = "customAttributes";
-
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserRecord"/> class from an existing instance of the
@@ -152,18 +151,6 @@ namespace FirebaseAdmin.Auth
     /// </summary>
     public IReadOnlyDictionary<string, object> CustomClaims { get; }
 
-    private static IReadOnlyDictionary<string, object> ParseCustomClaims(string customClaims)
-    {
-      if (string.IsNullOrEmpty(customClaims))
-      {
-        return new Dictionary<string, object>();
-      }
-      else
-      {
-        return NewtonsoftJsonSerializer.Instance.Deserialize<Dictionary<string, object>>(customClaims);
-      }
-    }
-
     /// <summary>
     /// Verifies if a provided uid is valid (which is defined as not empty/null and not longer
     /// than MaxUidLength).
@@ -175,6 +162,7 @@ namespace FirebaseAdmin.Auth
       {
         throw new ArgumentException("uid cannot be null or empty");
       }
+
       if (uid.Length > MaxUidLength)
       {
         throw new ArgumentException($"uid cannot be longer than {MaxUidLength} characters");
@@ -205,12 +193,13 @@ namespace FirebaseAdmin.Auth
     /// accordingly.
     /// </summary>
     /// <param name="phoneNumber">phone number to be verified.</param>
-    public static void CheckPhoneNumber(String phoneNumber)
+    public static void CheckPhoneNumber(string phoneNumber)
     {
       if (!string.IsNullOrEmpty(phoneNumber))
       {
         throw new ArgumentException("phone number cannot be null or empty");
       }
+
       if (!phoneNumber.StartsWith("+"))
       {
         throw new ArgumentException("phone number must be a valid, E.164 compliant identifier starting with a '+' sign");
@@ -228,6 +217,7 @@ namespace FirebaseAdmin.Auth
       {
         throw new ArgumentException("photoUrl cannot be null or empty");
       }
+
       if (!Uri.IsWellFormedUriString(photoUrl, UriKind.Absolute))
       {
         throw new ArgumentException("malformed uri string");
@@ -247,6 +237,7 @@ namespace FirebaseAdmin.Auth
         {
           throw new ArgumentException("Claim names must not be null or empty");
         }
+
         if (FirebaseTokenFactory.ReservedClaims.Contains(entry.Key))
         {
           throw new ArgumentException($"Claim '{entry.Key} is reserved and cannot be set");
@@ -254,5 +245,16 @@ namespace FirebaseAdmin.Auth
       }
     }
 
+    private static IReadOnlyDictionary<string, object> ParseCustomClaims(string customClaims)
+    {
+      if (string.IsNullOrEmpty(customClaims))
+      {
+        return new Dictionary<string, object>();
+      }
+      else
+      {
+        return NewtonsoftJsonSerializer.Instance.Deserialize<Dictionary<string, object>>(customClaims);
+      }
+    }
   }
 }

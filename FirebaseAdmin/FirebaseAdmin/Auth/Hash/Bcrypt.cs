@@ -20,10 +20,19 @@ namespace FirebaseAdmin.Auth.Hash
   /// Represents the Bcrypt password hashing algorithm. Can be used as an instance of
   /// <a cref="UserImportHash">UserImportHash</a> when importing users.
   /// </summary>
-  sealed class Bcrypt : UserImportHash
+  public sealed class Bcrypt : UserImportHash
   {
+    /// <summary>
+    /// Gets and defines name to be equal to BCRYPT.
+    /// </summary>
     protected override string HashName { get { return "BCRYPT"; } }
 
+    /// <summary>
+    /// Returns an empty dictionary representing no options for the Bcrypt hashing algorithm.
+    /// </summary>
+    /// <returns>
+    /// Dictionary defining no options.
+    /// </returns>
     protected override IReadOnlyDictionary<string, object> GetOptions()
     {
       return new Dictionary<string, object>();

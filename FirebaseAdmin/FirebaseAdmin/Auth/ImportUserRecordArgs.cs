@@ -13,9 +13,8 @@
 // limitations under the License.
 
 using System;
-using System.Text;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FirebaseAdmin.Auth
 {
@@ -26,21 +25,68 @@ namespace FirebaseAdmin.Auth
   /// </summary>
   public class ImportUserRecordArgs
   {
-    string Uid { get; set; }
-    string Email { get; set; }
-    bool? EmailVerified { get; set; }
-    string DisplayName { get; set; }
-    string PhoneNumber { get; set; }
-    string PhotoUrl { get; set; }
-    bool? Disabled
+    /// <summary>
+    /// Gets or sets the uid of the user.
+    /// </summary>
+    public string Uid { get; set; }
+
+    /// <summary>
+    /// Gets or sets the email address of the user.
+    /// </summary>
+    public string Email { get; set; }
+
+    /// <summary>
+    /// Gets or sets if the email was verified, null signifies that it was not specified.
+    /// </summary>
+    public bool? EmailVerified { get; set; }
+
+    /// <summary>
+    /// Gets or sets the display name of the user.
+    /// </summary>
+    public string DisplayName { get; set; }
+
+    /// <summary>
+    /// Gets or sets phone number of the user.
+    /// </summary>
+    public string PhoneNumber { get; set; }
+
+    /// <summary>
+    /// Gets or sets the photo url.
+    /// </summary>
+    public string PhotoUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets the disabled value, null signifies that it was not specified.
+    /// </summary>
+    public bool? Disabled
     {
       get; set;
     }
-    UserMetadata UserMetadata { get; set; }
-    byte[] PasswordHash { get; set; }
-    byte[] PasswordSalt { get; set; }
-    IEnumerable<UserProvider> UserProviders { get; set; }
-    IReadOnlyDictionary<string, object> CustomClaims { get; set; }
+
+    /// <summary>
+    /// Gets or sets the UserMetadata.
+    /// </summary>
+    public UserMetadata UserMetadata { get; set; }
+
+    /// <summary>
+    /// Gets or sets the password hash.
+    /// </summary>
+    public byte[] PasswordHash { get; set; }
+
+    /// <summary>
+    /// Gets or sets the password salt.
+    /// </summary>
+    public byte[] PasswordSalt { get; set; }
+
+    /// <summary>
+    /// Gets or sets the user providers.
+    /// </summary>
+    public IEnumerable<UserProvider> UserProviders { get; set; }
+
+    /// <summary>
+    /// Gets or sets the custom claims.
+    /// </summary>
+    public IReadOnlyDictionary<string, object> CustomClaims { get; set; }
 
     /// <summary>
     /// Determines if a password was set.
@@ -48,7 +94,7 @@ namespace FirebaseAdmin.Auth
     /// <returns>bool equivalent to if the PasswordHash is defined.</returns>
     public bool HasPassword()
     {
-      return PasswordHash != null;
+      return this.PasswordHash != null;
     }
 
     /// <summary>
@@ -58,75 +104,76 @@ namespace FirebaseAdmin.Auth
     /// <returns>Readonly dictionary containing all defined properties.</returns>
     public IReadOnlyDictionary<string, object> GetProperties()
     {
-      Dictionary<String, Object> properties = new Dictionary<String, Object>();
-      UserRecord.CheckUid(Uid);
-      properties.Add("localId", Uid);
+      Dictionary<string, object> properties = new Dictionary<string, object>();
+      UserRecord.CheckUid(this.Uid);
+      properties.Add("localId", this.Uid);
 
-      if (!string.IsNullOrEmpty(Email))
+      if (!string.IsNullOrEmpty(this.Email))
       {
-        UserRecord.CheckEmail(Email);
-        properties.Add("email", Email);
+        UserRecord.CheckEmail(this.Email);
+        properties.Add("email", this.Email);
       }
 
-      if (!string.IsNullOrEmpty(PhotoUrl))
+      if (!string.IsNullOrEmpty(this.PhotoUrl))
       {
-        UserRecord.CheckUrl(PhotoUrl);
-        properties.Add("photoUrl", PhotoUrl);
+        UserRecord.CheckUrl(this.PhotoUrl);
+        properties.Add("photoUrl", this.PhotoUrl);
       }
 
-      if (!string.IsNullOrEmpty(PhoneNumber))
+      if (!string.IsNullOrEmpty(this.PhoneNumber))
       {
-        UserRecord.CheckPhoneNumber(PhoneNumber);
-        properties.Add("phoneNumber", PhoneNumber);
+        UserRecord.CheckPhoneNumber(this.PhoneNumber);
+        properties.Add("phoneNumber", this.PhoneNumber);
       }
 
-      if (!string.IsNullOrEmpty(DisplayName))
+      if (!string.IsNullOrEmpty(this.DisplayName))
       {
-        properties.Add("displayName", DisplayName);
+        properties.Add("displayName", this.DisplayName);
       }
 
-      if (UserMetadata != null)
+      if (this.UserMetadata != null)
       {
-        if (UserMetadata.CreationTimestamp != null)
+        if (this.UserMetadata.CreationTimestamp != null)
         {
-          properties.Add("createdAt", UserMetadata.CreationTimestamp);
+          properties.Add("createdAt", this.UserMetadata.CreationTimestamp);
         }
-        if (UserMetadata.LastSignInTimestamp != null)
+
+        if (this.UserMetadata.LastSignInTimestamp != null)
         {
-          properties.Add("lastLoginAt", UserMetadata.LastSignInTimestamp);
+          properties.Add("lastLoginAt", this.UserMetadata.LastSignInTimestamp);
         }
       }
 
-      if (PasswordHash != null)
+      if (this.PasswordHash != null)
       {
-        properties.Add("passwordHash", UrlSafeBase64Encode(PasswordHash));
+        properties.Add("passwordHash", UrlSafeBase64Encode(this.PasswordHash));
       }
 
-      if (PasswordSalt != null)
+      if (this.PasswordSalt != null)
       {
-        properties.Add("salt", UrlSafeBase64Encode(PasswordSalt));
+        properties.Add("salt", UrlSafeBase64Encode(this.PasswordSalt));
       }
 
-      if (UserProviders.Count() > 0)
+      if (this.UserProviders.Count() > 0)
       {
-        properties.Add("providerUserInfo", new List<UserProvider>(UserProviders));
+        properties.Add("providerUserInfo", new List<UserProvider>(this.UserProviders));
       }
 
-      if (CustomClaims.Count() > 0)
+      if (this.CustomClaims.Count() > 0)
       {
-        IReadOnlyDictionary<String, Object> mergedClaims = CustomClaims;
+        IReadOnlyDictionary<string, object> mergedClaims = this.CustomClaims;
         UserRecord.CheckCustomClaims(mergedClaims);
         properties.Add(UserRecord.CustomAttributes, mergedClaims);
       }
 
-      if (EmailVerified != null)
+      if (this.EmailVerified != null)
       {
-        properties.Add("emailVerified", EmailVerified);
+        properties.Add("emailVerified", this.EmailVerified);
       }
 
-      if (Disabled != null)
+      if (this.Disabled != null)
       {
-        properties.Add("disabled", Disabled);
+        properties.Add("disabled", this.Disabled);
       }
 
       return properties;

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -24,7 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
 using Google.Apis.Json;
 using Google.Apis.Util;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Gax = Google.Api.Gax;
@@ -300,6 +298,26 @@ namespace FirebaseAdmin.Auth
       return (string)response.Result["sessionCookie"];
     }
 
+    internal async Task<UserImportResult> ImportUsersAsync(
+      UserImportRequest request,
+      CancellationToken cancellationToken)
+    {
+      if (request == null)
+      {
+        throw new ArgumentNullException("The UserImportRequest request should not be null");
+      }
+
+      var response = await this.PostAndDeserializeAsync<UploadAccountResponse>(
+          "accounts:batchCreate", request, cancellationToken).ConfigureAwait(false);
+      UploadAccountResponse uploadAccountResponse = response.Result;
+      if (uploadAccountResponse == null)
+      {
+        throw new FirebaseAuthException(ErrorCode.Internal, "Failed to import users.");
+      }
+
+      return new UserImportResult(request.GetUsersCount(), uploadAccountResponse);
+    }
+
     private static FirebaseAuthException UnexpectedResponseException(
         string message, Exception inner = null, HttpResponseMessage resp = null)
     {
@@ -327,23 +345,6 @@ namespace FirebaseAdmin.Auth
       }
 
       return new UserRecord(result.Users[0]);
-    }
-
-    internal async Task<UserImportResult> ImportUsersAsync(UserImportRequest request,
-        CancellationToken cancellationToken)
-    {
-      if (request == null)
-      {
-        throw new ArgumentNullException("The UserImportRequest request should not be null");
-      }
-      var response = await this.PostAndDeserializeAsync<UploadAccountResponse>(
-          "accounts:batchCreate", request, cancellationToken).ConfigureAwait(false);
-      UploadAccountResponse uploadAccountResponse = response.Result;
-      if (uploadAccountResponse == null)
-      {
-        throw new FirebaseAuthException(ErrorCode.Internal, "Failed to import users.");
-      }
-      return new UserImportResult(request.GetUsersCount(), uploadAccountResponse);
     }
 
     private async Task<DeserializedResponseInfo<TResult>> PostAndDeserializeAsync<TResult>(

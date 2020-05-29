@@ -18,10 +18,21 @@ namespace FirebaseAdmin.Auth.Hash
   /// Represents the SHA512 password hashing algorithm. Can be used as an instance of
   /// <a cref="UserImportHash">UserImportHash</a> when importing users.
   /// </summary>
-  class Sha512 : RepeatableHash
+  public sealed class Sha512 : RepeatableHash
   {
+    /// <summary>
+    /// Gets the hash name which is SHA512.
+    /// </summary>
     protected override string HashName { get { return "SHA512"; } }
+
+    /// <summary>
+    /// Gets the minimum number of rounds for a SHA512 hash which is 1.
+    /// </summary>
     protected override int MinRounds { get { return 1; } }
+
+    /// <summary>
+    /// Gets the maximum number of rounds for a SHA512 hash is 8192.
+    /// </summary>
     protected override int MaxRounds { get { return 8192; } }
   }
 }
