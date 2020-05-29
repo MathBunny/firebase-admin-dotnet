@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace FirebaseAdmin.Auth.Hash.Tests
@@ -113,6 +112,25 @@ namespace FirebaseAdmin.Auth.Hash.Tests
     }
 
     [Fact]
+    public void TestRepeatableHashesNoRounds()
+    {
+      var repeatableHashes = new Dictionary<string, RepeatableHash>()
+      {
+          { "MD5", new Md5 { } },
+          { "SHA1", new Sha1 { } },
+          { "SHA256", new Sha256 { } },
+          { "SHA512", new Sha512 { } },
+          { "PBKDF_SHA1", new PdkdfSha1 { } },
+          { "PBKDF2_SHA256", new Pdkdf2Sha256 { } },
+      };
+
+      foreach (KeyValuePair<string, RepeatableHash> entry in repeatableHashes)
+      {
+          Assert.Throws<ArgumentException>(() => entry.Value.GetProperties());
+      }
+    }
+
+    [Fact]
     public void TestHmacHashes()
     {
       var repeatableHashes = new Dictionary<string, Hmac>()
@@ -135,52 +153,20 @@ namespace FirebaseAdmin.Auth.Hash.Tests
     }
 
     [Fact]
-    public void NoProviderId()
+    public void TestHmacHashesNoKey()
     {
-      Assert.Throws<ArgumentException>(() => new UserProvider().ProviderId);
-    }
-
-    [Fact]
-    public void EmptyProviderId()
-    {
-      var userProvider = new UserProvider();
-      userProvider.ProviderId = string.Empty;
-      Assert.Throws<ArgumentException>(() => userProvider.ProviderId);
-    }
-
-    [Fact]
-    public void RequiredOnly()
-    {
-      var userProvider = new UserProvider()
+      var repeatableHashes = new Dictionary<string, Hmac>()
       {
-        Uid = "user1",
-        ProviderId = "firebase",
+          { "HMAC_MD5", new HmacMd5 { } },
+          { "HMAC_SHA1", new HmacSha1 { } },
+          { "HMAC_SHA256", new HmacSha256 { } },
+          { "HMAC_SHA512", new HmacSha512 { } },
       };
 
-      Assert.Equal("user1", userProvider.Uid);
-      Assert.Null(userProvider.DisplayName);
-      Assert.Null(userProvider.Email);
-      Assert.Null(userProvider.PhotoUrl);
-      Assert.Equal("firebase", userProvider.ProviderId);
-    }
-
-    [Fact]
-    public void AllProperties()
-    {
-      var userProvider = new UserProvider()
+      foreach (KeyValuePair<string, Hmac> entry in repeatableHashes)
       {
-        DisplayName = "displayName",
-        Email = "example@gmail.com",
-        PhotoUrl = "http://photo.com",
-        Uid = "user1",
-        ProviderId = "firebase",
-      };
-
-      Assert.Equal("user1", userProvider.Uid);
-      Assert.Equal("displayName", userProvider.DisplayName);
-      Assert.Equal("example@gmail.com", userProvider.Email);
-      Assert.Equal("http://photo.com", userProvider.PhotoUrl);
-      Assert.Equal("firebase", userProvider.ProviderId);
+          Assert.Throws<ArgumentException>(() => entry.Value.GetProperties());
+      }
     }
 
     private class MockHash : UserImportHash
