@@ -32,11 +32,10 @@ namespace FirebaseAdmin.Auth.Hash
     private int? parallelization;
 
     /// <summary>
-    /// Gets the hash name which is STANDARD_SCRYPT.
+    /// Gets or sets the derived key length for the hashing algorithm.
+    /// <remark>The length cannot be negative.</remark>
     /// </summary>
-    protected override string HashName { get { return "STANDARD_SCRYPT"; } }
-
-    private int DerivedKeyLength
+    public int DerivedKeyLength
     {
       get
       {
@@ -59,7 +58,11 @@ namespace FirebaseAdmin.Auth.Hash
       }
     }
 
-    private int BlockSize
+    /// <summary>
+    /// Gets or sets the block size for the hashing algorithm.
+    /// <remark>The size cannot be negative.</remark>
+    /// </summary>
+    public int BlockSize
     {
       get
       {
@@ -82,7 +85,11 @@ namespace FirebaseAdmin.Auth.Hash
       }
     }
 
-    private int Parallelization
+    /// <summary>
+    /// Gets or sets parallelization of the hashing algorithm.
+    /// <remark> The parallelization factor cannot be negative. </remark>
+    /// </summary>
+    public int Parallelization
     {
       get
       {
@@ -105,7 +112,11 @@ namespace FirebaseAdmin.Auth.Hash
       }
     }
 
-    private int MemoryCost
+    /// <summary>
+    /// Gets or sets memory cost for the hashing algorithm.
+    /// <remark> The memory cost cannot be negative. </remark>
+    /// </summary>
+    public int MemoryCost
     {
       get
       {
@@ -127,6 +138,11 @@ namespace FirebaseAdmin.Auth.Hash
         this.memoryCost = value;
       }
     }
+
+    /// <summary>
+    /// Gets the hash name which is STANDARD_SCRYPT.
+    /// </summary>
+    protected override string HashName { get { return "STANDARD_SCRYPT"; } }
 
     /// <summary>
     /// Returns the options for the hashing algorithm.

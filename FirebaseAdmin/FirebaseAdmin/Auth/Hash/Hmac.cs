@@ -25,7 +25,7 @@ namespace FirebaseAdmin.Auth.Hash
     /// <summary>
     /// Gets or sets the key for the hash.
     /// </summary>
-    protected string Key { get; set; }
+    public string Key { get; set; }
 
     /// <summary>
     /// Verifies that the key was appropriately set and returns the options dictionary.

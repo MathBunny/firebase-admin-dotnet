@@ -26,7 +26,7 @@ namespace FirebaseAdmin.Auth.Hash
     /// <summary>
     /// Gets or sets the number of rounds for the repeatable hash.
     /// </summary>
-    protected int Rounds { get; set; }
+    public int Rounds { get; set; }
 
     /// <summary>
     /// Gets the minimum number of rounds for that respective repeatable hash implementation.
@@ -44,9 +44,9 @@ namespace FirebaseAdmin.Auth.Hash
     /// <returns> Dictionary containing the number of rounds.</returns>
     protected override IReadOnlyDictionary<string, object> GetOptions()
     {
-      if (this.Rounds >= this.MinRounds && this.Rounds <= this.MaxRounds)
+      if (this.Rounds < this.MinRounds || this.Rounds > this.MaxRounds)
       {
-        throw new ArgumentException($"Rounds value must be between {this.MinRounds} and ${this.MaxRounds} (inclusive).");
+        throw new ArgumentException($"Rounds value must be between {this.MinRounds} and {this.MaxRounds} (inclusive).");
       }
 
       return new Dictionary<string, object>

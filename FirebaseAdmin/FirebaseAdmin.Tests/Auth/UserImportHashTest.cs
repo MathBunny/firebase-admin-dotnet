@@ -17,12 +17,12 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace FirebaseAdmin.Auth.Tests
+namespace FirebaseAdmin.Auth.Hash.Tests
 {
   public class UserImportHashTest
   {
-    private static byte[] signerKey = Encoding.ASCII.GetBytes("key");
-    private static byte[] saltSeperator = Encoding.ASCII.GetBytes("separator");
+    private static string signerKey = "key%20";
+    private static string saltSeperator = "separator";
 
     [Fact]
     public void TestBase()
@@ -33,18 +33,105 @@ namespace FirebaseAdmin.Auth.Tests
       var expectedResult = new Dictionary<string, object>
         {
           { "key", "value" },
-          { "name", "MockHash" },
+          { "hashAlgorithm", "MockHash" },
         };
 
       Assert.Equal(expectedResult, hash.GetProperties());
     }
 
     [Fact]
-    public void EmptyUid()
+    public void TestScryptHash()
     {
-      var userProvider = new UserProvider();
-      userProvider.Uid = string.Empty;
-      Assert.Throws<ArgumentException>(() => userProvider.Uid);
+      UserImportHash hash = new Scrypt()
+      {
+          Rounds = 8,
+          Key = signerKey,
+          SaltSeparator = saltSeperator,
+          MemoryCost = 13,
+      };
+      var props = hash.GetProperties();
+
+      var expectedResult = new Dictionary<string, object>
+        {
+          { "hashAlgorithm", "SCRYPT" },
+          { "rounds", 8 },
+          { "signerKey", "a2V5JTIw" },
+          { "saltSeparator", "c2VwYXJhdG9y" },
+          { "memoryCost", 13 },
+        };
+
+      Assert.Equal(expectedResult, hash.GetProperties());
+    }
+
+    [Fact]
+    public void TestStandardScryptHash()
+    {
+      UserImportHash hash = new StandardScrypt()
+      {
+          DerivedKeyLength = 8,
+          BlockSize = 4,
+          Parallelization = 2,
+          MemoryCost = 13,
+      };
+      var props = hash.GetProperties();
+
+      var expectedResult = new Dictionary<string, object>
+        {
+          { "hashAlgorithm", "STANDARD_SCRYPT" },
+          { "rounds", 8 },
+          { "dkLen", 8 },
+          { "blockSize", 4 },
+          { "parallization", 2 },
+          { "memoryCost", 13 },
+        };
+
+      Assert.Equal(expectedResult, hash.GetProperties());
+    }
+
+    [Fact]
+    public void TestRepeatableHashes()
+    {
+      var repeatableHashes = new Dictionary<string, RepeatableHash>()
+      {
+          { "MD5", new Md5 { Rounds = 5 } },
+          { "SHA1", new Sha1 { Rounds = 5 } },
+          { "SHA256", new Sha256 { Rounds = 5 } },
+          { "SHA512", new Sha512 { Rounds = 5 } },
+          { "PBKDF_SHA1", new PdkdfSha1 { Rounds = 5 } },
+          { "PBKDF2_SHA256", new Pdkdf2Sha256 { Rounds = 5 } },
+      };
+
+      foreach (KeyValuePair<string, RepeatableHash> entry in repeatableHashes)
+      {
+          var expected = new Dictionary<string, object>()
+          {
+            { "hashAlgorithm", entry.Key },
+            { "rounds", 5 },
+          };
+          Assert.Equal(expected, entry.Value.GetProperties());
+      }
+    }
+
+    [Fact]
+    public void TestHmacHashes()
+    {
+      var repeatableHashes = new Dictionary<string, Hmac>()
+      {
+          { "HMAC_MD5", new HmacMd5 { Key = signerKey } },
+          { "HMAC_SHA1", new HmacSha1 { Key = signerKey } },
+          { "HMAC_SHA256", new HmacSha256 { Key = signerKey } },
+          { "HMAC_SHA512", new HmacSha512 { Key = signerKey } },
+      };
+
+      foreach (KeyValuePair<string, Hmac> entry in repeatableHashes)
+      {
+          var expected = new Dictionary<string, object>()
+          {
+            { "hashAlgorithm", entry.Key },
+            { "signerKey", signerKey },
+          };
+          Assert.Equal(expected, entry.Value.GetProperties());
+      }
     }
 
     [Fact]

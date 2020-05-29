@@ -18,7 +18,7 @@ namespace FirebaseAdmin.Auth.Hash
   /// Represents the HMAC MD5 password hashing algorithm. Can be used as an instance of
   /// <a cref="UserImportHash">UserImportHash</a> when importing users.
   /// </summary>
-  public abstract class HmacMd5 : Hmac
+  public sealed class HmacMd5 : Hmac
   {
     /// <summary>
     /// Gets and defines name to be equal to HMAC_MD5.

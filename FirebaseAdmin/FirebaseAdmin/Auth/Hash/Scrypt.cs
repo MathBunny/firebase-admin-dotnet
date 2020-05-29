@@ -32,21 +32,9 @@ namespace FirebaseAdmin.Auth.Hash
     private int? memoryCost;
 
     /// <summary>
-    /// Gets the hash name which is SCRYPT.
+    /// Gets or sets the signer key for the hashing algorithm.
     /// </summary>
-    protected override string HashName { get { return "SCRYPT"; } }
-
-    /// <summary>
-    /// Gets the minimum number of rounds for a Scrypt hash which is 0.
-    /// </summary>
-    protected override int MinRounds { get { return 1; } }
-
-    /// <summary>
-    /// Gets the maximum number of rounds for a Scrypt hash which is 8.
-    /// </summary>
-    protected override int MaxRounds { get { return 8; } }
-
-    private string Key
+    public string Key
     {
       get
       {
@@ -70,7 +58,10 @@ namespace FirebaseAdmin.Auth.Hash
       }
     }
 
-    private string SaltSeparator
+    /// <summary>
+    /// Gets or sets the salt separator for the hashing algorithm.
+    /// </summary>
+    public string SaltSeparator
     {
       get
       {
@@ -91,7 +82,10 @@ namespace FirebaseAdmin.Auth.Hash
       }
     }
 
-    private int MemoryCost
+    /// <summary>
+    /// Gets or sets the memory cost for the hashing algorithm.
+    /// </summary>
+    public int MemoryCost
     {
       get
       {
@@ -115,6 +109,21 @@ namespace FirebaseAdmin.Auth.Hash
     }
 
     /// <summary>
+    /// Gets the hash name which is SCRYPT.
+    /// </summary>
+    protected override string HashName { get { return "SCRYPT"; } }
+
+    /// <summary>
+    /// Gets the minimum number of rounds for a Scrypt hash which is 0.
+    /// </summary>
+    protected override int MinRounds { get { return 1; } }
+
+    /// <summary>
+    /// Gets the maximum number of rounds for a Scrypt hash which is 8.
+    /// </summary>
+    protected override int MaxRounds { get { return 8; } }
+
+    /// <summary>
     /// Returns the options for the hashing algorithm.
     /// </summary>
     /// <returns>
@@ -125,7 +134,7 @@ namespace FirebaseAdmin.Auth.Hash
       var dict = new Dictionary<string, object>((Dictionary<string, object>)base.GetOptions());
       dict.Add("signerKey", this.Key);
       dict.Add("memoryCost", this.MemoryCost);
-      dict.Add("SaltSeparator", this.SaltSeparator);
+      dict.Add("saltSeparator", this.SaltSeparator);
       return dict;
     }
 

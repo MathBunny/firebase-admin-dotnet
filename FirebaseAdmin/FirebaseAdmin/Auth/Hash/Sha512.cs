@@ -31,7 +31,7 @@ namespace FirebaseAdmin.Auth.Hash
     protected override int MinRounds { get { return 1; } }
 
     /// <summary>
-    /// Gets the maximum number of rounds for a SHA512 hash is 8192.
+    /// Gets the maximum number of rounds for a SHA512 hash which is 8192.
     /// </summary>
     protected override int MaxRounds { get { return 8192; } }
   }
